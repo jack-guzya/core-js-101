@@ -20,8 +20,10 @@
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(/* width, height */) {
-  throw new Error('Not implemented');
+function Rectangle(width, height) {
+  this.width = width;
+  this.height = height;
+  this.getArea = () => this.width * this.height;
 }
 
 
@@ -35,8 +37,8 @@ function Rectangle(/* width, height */) {
  *    [1,2,3]   =>  '[1,2,3]'
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
-function getJSON(/* obj */) {
-  throw new Error('Not implemented');
+function getJSON(obj) {
+  return JSON.stringify(obj);
 }
 
 
@@ -51,8 +53,11 @@ function getJSON(/* obj */) {
  *    const r = fromJSON(Circle.prototype, '{"radius":10}');
  *
  */
-function fromJSON(/* proto, json */) {
-  throw new Error('Not implemented');
+function fromJSON(proto, json) {
+  const obj = JSON.parse(json);
+  // eslint-disable-next-line no-proto
+  obj.__proto__ = proto;
+  return obj;
 }
 
 
@@ -111,32 +116,85 @@ function fromJSON(/* proto, json */) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  selector: '',
+  name: '',
+  stringify() {
+    const res = this.selector;
+    return res;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    if (this.name === 'id') {
+      throw Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    const elem = Object.create(this);
+    elem.selector += value;
+    if (elem.name === 'element') {
+      throw Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+    elem.name = 'element';
+    return elem;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    if (this.name === 'class' || this.name === 'pseudoElement') {
+      throw Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    const id = Object.create(this);
+    id.selector += `#${value}`;
+    if (id.name === 'id') {
+      throw Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+    id.name = 'id';
+    return id;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    if (this.name === 'attr') {
+      throw Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    const myClass = Object.create(this);
+    myClass.selector += `.${value}`;
+    myClass.name = 'class';
+    return myClass;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    if (this.name === 'pseudoClass') {
+      throw Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    const attr = Object.create(this);
+    attr.selector += `[${value}]`;
+    attr.name = 'attr';
+    return attr;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    if (this.name === 'pseudoElement') {
+      throw Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    const pseudoClass = Object.create(this);
+    pseudoClass.selector += `:${value}`;
+    pseudoClass.name = 'pseudoClass';
+    return pseudoClass;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    const pseudoElement = Object.create(this);
+    pseudoElement.selector += `::${value}`;
+    if (pseudoElement.name === 'pseudoElement') {
+      throw Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+    pseudoElement.name = 'pseudoElement';
+    return pseudoElement;
+  },
+
+  combine(selector1, combinator, selector2) {
+    const combine = Object.create(this);
+    const value1 = selector1.selector;
+    const value2 = selector2.selector;
+    combine.selector = `${value1} ${combinator} ${value2}`;
+    return combine;
   },
 };
 

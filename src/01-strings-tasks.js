@@ -1,6 +1,6 @@
 /* *******************************************************************************************
  *                                                                                           *
- * Plese read the following tutorial before implementing tasks:                              *
+ * Please read the following tutorial before implementing tasks:                              *
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String   *
  *                                                                                           *
  ******************************************************************************************* */
@@ -18,8 +18,8 @@
  *   'aa',''    => 'aa'
  *   '',  'bb'  => 'bb'
  */
-function concatenateStrings(/* value1, value2 */) {
-  throw new Error('Not implemented');
+function concatenateStrings(val1, val2) {
+  return val1 + val2;
 }
 
 
@@ -34,8 +34,8 @@ function concatenateStrings(/* value1, value2 */) {
  *   'b'     => 1
  *   ''      => 0
  */
-function getStringLength(/* value */) {
-  throw new Error('Not implemented');
+function getStringLength(value) {
+  return value.length;
 }
 
 /**
@@ -51,8 +51,8 @@ function getStringLength(/* value */) {
  *   'John','Doe'      => 'Hello, John Doe!'
  *   'Chuck','Norris'  => 'Hello, Chuck Norris!'
  */
-function getStringFromTemplate(/* firstName, lastName */) {
-  throw new Error('Not implemented');
+function getStringFromTemplate(firstName, lastName) {
+  return `Hello, ${firstName} ${lastName}!`;
 }
 
 /**
@@ -65,8 +65,8 @@ function getStringFromTemplate(/* firstName, lastName */) {
  *   'Hello, John Doe!' => 'John Doe'
  *   'Hello, Chuck Norris!' => 'Chuck Norris'
  */
-function extractNameFromTemplate(/* value */) {
-  throw new Error('Not implemented');
+function extractNameFromTemplate(value) {
+  return value.match(/\w+\s\w+/)[0];
 }
 
 
@@ -80,8 +80,8 @@ function extractNameFromTemplate(/* value */) {
  *   'John Doe'  => 'J'
  *   'cat'       => 'c'
  */
-function getFirstChar(/* value */) {
-  throw new Error('Not implemented');
+function getFirstChar(value) {
+  return value[0];
 }
 
 /**
@@ -95,8 +95,8 @@ function getFirstChar(/* value */) {
  *   'cat'              => 'cat'
  *   '\tHello, World! ' => 'Hello, World!'
  */
-function removeLeadingAndTrailingWhitespaces(/* value */) {
-  throw new Error('Not implemented');
+function removeLeadingAndTrailingWhitespaces(value) {
+  return value.trim();
 }
 
 /**
@@ -110,8 +110,8 @@ function removeLeadingAndTrailingWhitespaces(/* value */) {
  *   'A', 5  => 'AAAAA'
  *   'cat', 3 => 'catcatcat'
  */
-function repeatString(/* value, count */) {
-  throw new Error('Not implemented');
+function repeatString(value, count) {
+  return value.repeat(count);
 }
 
 /**
@@ -126,8 +126,8 @@ function repeatString(/* value, count */) {
  *   'I like legends', 'end' => 'I like legs',
  *   'ABABAB','BA' => 'ABAB'
  */
-function removeFirstOccurrences(/* str, value */) {
-  throw new Error('Not implemented');
+function removeFirstOccurrences(str, value) {
+  return str.replace(value, '');
 }
 
 /**
@@ -141,8 +141,8 @@ function removeFirstOccurrences(/* str, value */) {
  *   '<span>' => 'span'
  *   '<a>' => 'a'
  */
-function unbracketTag(/* str */) {
-  throw new Error('Not implemented');
+function unbracketTag(str) {
+  return str.replace(/>|</g, '');
 }
 
 
@@ -156,8 +156,8 @@ function unbracketTag(/* str */) {
  *   'Thunderstruck' => 'THUNDERSTRUCK'
  *  'abcdefghijklmnopqrstuvwxyz' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
  */
-function convertToUpperCase(/* str */) {
-  throw new Error('Not implemented');
+function convertToUpperCase(str) {
+  return str.toUpperCase();
 }
 
 /**
@@ -175,8 +175,8 @@ function convertToUpperCase(/* str */) {
  *   ],
  *   'info@gmail.com' => ['info@gmail.com']
  */
-function extractEmails(/* str */) {
-  throw new Error('Not implemented');
+function extractEmails(str) {
+  return str.split(';');
 }
 
 /**
@@ -202,8 +202,16 @@ function extractEmails(/* str */) {
  *             '└──────────┘\n'
  *
  */
-function getRectangleString(/* width, height */) {
-  throw new Error('Not implemented');
+function getRectangleString(width, height) {
+  let str = `┌${'─'.repeat(width - 2)}┐\n`;
+
+  for (let i = 0; i < height - 2; i += 1) {
+    str += `│${' '.repeat(width - 2)}│\n`;
+  }
+
+  str += `└${'─'.repeat(width - 2)}┘\n`;
+
+  return str;
 }
 
 
@@ -223,8 +231,27 @@ function getRectangleString(/* width, height */) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
+function encodeToRot13(str) {
+  let encodeStr = '';
+
+  function getCodeOfLetter(code, mode) {
+    return mode + ((code + 26) % 26);
+  }
+
+  Object.keys(str).forEach((char) => {
+    if (/[a-zA-Z]/.test(str[char])) {
+      let lowerUpperCaseMode = 65;
+      if (/[a-z]/.test(str[char])) {
+        lowerUpperCaseMode = 97;
+      }
+      const encodeLetter = str[char].codePointAt(0) + 13 - lowerUpperCaseMode;
+      encodeStr += String.fromCodePoint(getCodeOfLetter(encodeLetter, lowerUpperCaseMode));
+    } else {
+      encodeStr += str[char];
+    }
+  });
+
+  return encodeStr;
 }
 
 /**
@@ -240,10 +267,12 @@ function encodeToRot13(/* str */) {
  *   isString('test') => true
  *   isString(new String('test')) => true
  */
-function isString(/* value */) {
-  throw new Error('Not implemented');
+function isString(value) {
+  return ((typeof value === 'object'
+  && !Array.isArray(value)
+  && String(value) !== 'null'
+  && typeof String(value) === 'string') || typeof value === 'string');
 }
-
 
 /**
  * Returns playid card id.
@@ -269,8 +298,24 @@ function isString(/* value */) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(value) {
+  const secondLabel = value.replace(/[^♣♦♥♠]/g, '');
+  const firstLabel = value.replace(/[♣♦♥♠]/g, '');
+  const id = {
+    A: 1,
+    J: 11,
+    Q: 12,
+    K: 13,
+    '♣': 0,
+    '♦': 13,
+    '♥': 26,
+    '♠': 39,
+  };
+
+  if (/[AJQK]/.test(firstLabel)) {
+    return id[firstLabel] + id[secondLabel] - 1;
+  }
+  return +firstLabel + id[secondLabel] - 1;
 }
 
 
